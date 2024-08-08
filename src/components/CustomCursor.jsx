@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import  { useEffect, useState, useRef } from "react";
 
 const CustomCursor = () => {
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -44,7 +44,7 @@ const CustomCursor = () => {
 					width: "10px",
 					height: "10px",
 					backgroundColor: "transparent",
-					border: "5px solid #FFF200", // Color amarillo
+					border: "5px solid #FFF200",
 					borderRadius: "50%",
 					pointerEvents: "none",
 					transform: "translate(-50%, -50%)",
