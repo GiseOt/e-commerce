@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { FirestoreContext } from "../contex/FireStoreContext";
-import { Card, CardContent, CardMedia, Typography, Grid } from "@mui/material";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardMedia, Typography, Grid , Button, Box} from "@mui/material";
 
 const ProductList = () => {
 	const { products, error } = useContext(FirestoreContext);
@@ -41,20 +42,39 @@ const ProductList = () => {
 								>
 									{product.name}
 								</Typography>
+
 								<Typography
 									variant="body2"
 									color="text.secondary"
 									textAlign="center"
-								>
-									{product.category}{" "}
-								</Typography>
-								<Typography
-									variant="body2"
-									color="text.secondary"
-									textAlign="center"
+									backgroundColor="#EEEDEB"
+									width={50}
+									margin="auto"
 								>
 									€{product.price}
 								</Typography>
+								<Box
+									sx={{
+										textAlign: "center",
+										mx: 2,
+										my: 2,
+										color: "gray",
+										position: "relative",
+
+										"&:hover::after": {
+											width: "100%",
+										},
+									}}
+								>
+									<Button variant="outlined">
+										<Link
+											to={`/product/${product.id}`}
+											style={{ textDecoration: "none", color: "inherit" }}
+										>
+											View Details
+										</Link>
+									</Button>
+								</Box>
 							</CardContent>
 						</Card>
 					</Grid>
