@@ -6,6 +6,7 @@ export const FirestoreContext = createContext();
 
 export const FirestoreProvider = ({ children }) => {
 	const [products, setProducts] = useState([]);
+    const [cart, setCart] = useState([]);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
@@ -26,8 +27,28 @@ export const FirestoreProvider = ({ children }) => {
 		fetchProducts();
 	}, []);
 
+    //Cart 
+
+   const addToCart = (product) => {
+			setCart((currentCart) => [
+				...currentCart,
+				{ ...product, index: currentCart.length },
+			]);
+		};
+
+
+     const removeFromCart = (index) => {
+				setCart((currentCart) =>
+					currentCart.filter((item) => item.index !== index)
+				);
+			};
+
+
+
 	return (
-		<FirestoreContext.Provider value={{ products, error }}>
+		<FirestoreContext.Provider
+			value={{ products, cart, addToCart, removeFromCart, error }}
+		>
 			{children}
 		</FirestoreContext.Provider>
 	);

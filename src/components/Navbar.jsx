@@ -1,5 +1,7 @@
-import * as React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { FirestoreContext } from "../contex/FireStoreContext";
 import {
 	AppBar,
 	Box,
@@ -8,26 +10,16 @@ import {
 	Typography,
 	Button,
 	CssBaseline,
-	Menu,
-	MenuItem,
 	Badge,
 } from "@mui/material";
 import { FaShoppingCart, FaBars } from "react-icons/fa";
 
 const Navbar = () => {
-	const [anchorElNav, setAnchorElNav] = React.useState(null);
-	const [anchorElCart, setAnchorElCart] = React.useState(null);
+	const { cart } = useContext(FirestoreContext);
+	const navigate = useNavigate();
 
-	const handleOpenNavMenu = (event) => {
-		setAnchorElNav(event.currentTarget);
-	};
-
-	const handleOpenCartMenu = (event) => {
-		setAnchorElCart(event.currentTarget);
-	};
-
-	const handleCloseCartMenu = () => {
-		setAnchorElCart(null);
+	const handleCartClick = () => {
+		navigate("/yourcart");
 	};
 
 	return (
@@ -40,7 +32,6 @@ const Navbar = () => {
 						edge="start"
 						color="inherit"
 						aria-label="menu"
-						onClick={handleOpenNavMenu}
 						sx={{ display: { xs: "block", md: "none" }, color: "gray" }}
 					>
 						<FaBars size={24} />
@@ -137,43 +128,20 @@ const Navbar = () => {
 								},
 							}}
 						>
-							<Link
-								to="/youcart"
+						<Link
+								to="/yourcart"
 								style={{ textDecoration: "none", color: "inherit" }}
 							>
 								Your cart
-							</Link>
+							</Link> 
 						</Button>
 					</Box>
 					<Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
-						<IconButton
-							onClick={handleOpenCartMenu}
-							sx={{ p: 0, color: "gray" }}
-						>
-							<Badge badgeContent={3} color="primary">
+						<IconButton onClick={handleCartClick} sx={{ p: 0, color: "gray" }}>
+							<Badge badgeContent={cart.length} color="primary">
 								<FaShoppingCart size={24} />
 							</Badge>
 						</IconButton>
-						<Menu
-							sx={{ mt: "45px" }}
-							id="menu-cart"
-							anchorEl={anchorElCart}
-							anchorOrigin={{
-								vertical: "top",
-								horizontal: "right",
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: "top",
-								horizontal: "right",
-							}}
-							open={Boolean(anchorElCart)}
-							onClose={handleCloseCartMenu}
-						>
-							<MenuItem onClick={handleCloseCartMenu}>Item 1</MenuItem>
-							<MenuItem onClick={handleCloseCartMenu}>Item 2</MenuItem>
-							<MenuItem onClick={handleCloseCartMenu}>Item 3</MenuItem>
-						</Menu>
 					</Box>
 				</Toolbar>
 			</AppBar>

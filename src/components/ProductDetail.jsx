@@ -1,29 +1,50 @@
-import { useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { FirestoreContext } from "../contex/FireStoreContext";
-import NotFound from "../pages/NotFound"
-import { Typography, Box, Button } from "@mui/material"; 
+import NotFound from "../pages/NotFound";
+import {
+	Typography,
+	Box,
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+} from "@mui/material";
 
 const ProductDetail = () => {
 	const { id } = useParams();
-	const { products, error } = useContext(FirestoreContext);
+	const { products, addToCart, error } = useContext(FirestoreContext);
+	const [open, setOpen] = useState(false);
+	const navigate = useNavigate();
 
 	const product = products.find((product) => product.id === id);
 
-	console.log("Product ID:", id);
-	if (product) {
-		console.log("Product Name:", product.name);
-	} else {
-		console.log("Product not found");
+	if (error) {
+		return <NotFound />;
 	}
 
-	if (error) {
-		return (
-			<Typography variant="h6" color="error">
-				Error: {error.message}
-			</Typography>
-		);
-	}
+	const handleAddToCart = () => {
+		if (product) {
+			addToCart(product);
+			setOpen(true);
+		}
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
+
+	const handleContinueShopping = () => {
+		setOpen(false);
+		navigate("/");
+	};
+
+	const handleGoToCart = () => {
+		setOpen(false);
+		navigate("/yourcart");
+	};
 
 	return (
 		<Box
@@ -32,18 +53,8 @@ const ProductDetail = () => {
 				padding: "16px",
 				maxWidth: "600px",
 				margin: "auto",
-               
 			}}
 		>
-			<Typography
-				variant="h4"
-				gutterBottom
-				sx={{
-					marginTop: "80px",
-				}}
-			>
-				Product Detail
-			</Typography>
 			{product ? (
 				<Box sx={{ textAlign: "center" }}>
 					<img
@@ -54,6 +65,7 @@ const ProductDetail = () => {
 							height: "auto",
 							borderRadius: "8px",
 							marginBottom: "16px",
+							marginTop: "80px",
 						}}
 					/>
 					<Typography variant="h5" gutterBottom>
@@ -76,9 +88,35 @@ const ProductDetail = () => {
 							backgroundColor: "#FF6F61",
 							"&:hover": { backgroundColor: "#FF3B30" },
 						}}
+						onClick={handleAddToCart}
 					>
 						Add to Cart
 					</Button>
+
+					{/* Modal */}
+					<Dialog
+						open={open}
+						onClose={handleClose}
+						aria-labelledby="alert-dialog-title"
+						aria-describedby="alert-dialog-description"
+					>
+						<DialogTitle id="alert-dialog-title">
+							{"Product Added to Cart"}
+						</DialogTitle>
+						<DialogContent>
+							<DialogContentText id="alert-dialog-description">
+								{`${product.name} has been added to your cart.`}
+							</DialogContentText>
+						</DialogContent>
+						<DialogActions>
+							<Button onClick={handleContinueShopping} color="primary">
+								Continue Shopping
+							</Button>
+							<Button onClick={handleGoToCart} color="primary" autoFocus>
+								Go to Cart
+							</Button>
+						</DialogActions>
+					</Dialog>
 				</Box>
 			) : (
 				<NotFound />

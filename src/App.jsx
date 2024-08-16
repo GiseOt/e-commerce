@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router";
 import { CssBaseline } from "@mui/material";
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
+import YourCart from "./components/YourCart";
 //Pages
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
@@ -19,9 +20,10 @@ function App() {
 				<CustomCursor />
 				<Routes>
 					<Route path="/" element={<Home />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
-                    <Route path="/categories" element={<Categories/>}/>
-					<Route path="*" element={<NotFound/>} />
+					<Route path="/product/:id" element={<ProductDetail />} />
+					<Route path="/categories" element={<Categories />} />
+					<Route path="/yourcart" element={<YourCart />} />
+					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</div>
 		</FirestoreProvider>

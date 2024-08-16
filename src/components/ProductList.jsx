@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { FirestoreContext } from "../contex/FireStoreContext";
 import { Link } from "react-router-dom";
+import NotFound from "../pages/NotFound";
 import { Card, CardContent, CardMedia, Typography, Grid , Button, Box} from "@mui/material";
 
 const ProductList = () => {
@@ -8,9 +9,7 @@ const ProductList = () => {
 
 	if (error)
 		return (
-			<Typography variant="h6" color="error">
-				Error: {error.message}
-			</Typography>
+		<NotFound/>
 		);
 
 	return (
@@ -69,7 +68,10 @@ const ProductList = () => {
 									<Button variant="outlined">
 										<Link
 											to={`/product/${product.id}`}
-											style={{ textDecoration: "none", color: "inherit" }}
+											style={{
+												textDecoration: "none",
+												color: "#405D72",
+											}}
 										>
 											View Details
 										</Link>
