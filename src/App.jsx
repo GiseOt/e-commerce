@@ -4,6 +4,7 @@ import { CssBaseline } from "@mui/material";
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
 import YourCart from "./components/YourCart";
+
 //Pages
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
