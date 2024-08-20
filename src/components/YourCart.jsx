@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { FirestoreContext } from "../contex/FireStoreContext";
 import {
 	Box,
@@ -12,14 +13,29 @@ import {
 	IconButton,
 } from "@mui/material";
 import { FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
+
 
 const YourCart = () => {
-	const { cart, removeFromCart } = useContext(FirestoreContext);
+	const navigate = useNavigate();
+	const { cart, removeFromCart , emptyCart } = useContext(FirestoreContext);
 
 	const handleRemoveItem = (id) => {
 		removeFromCart(id);
 	};
 
+    const handleBuyNow = () => {
+			Swal.fire({
+				position: "center",
+				icon: "success",
+				title: "Purchase Successful",
+				showConfirmButton: false,
+				timer: 2000,
+			}).then(() => {
+				emptyCart();
+				navigate("/");
+			});
+		};
 	const getTotal = () => {
 		return cart.reduce((total, product) => {
 			const price = parseFloat(product.price);
@@ -70,11 +86,12 @@ const YourCart = () => {
 						</Typography>
 						<Button
 							variant="contained"
+						onClick={handleBuyNow}
 							sx={{
-								backgroundColor: "#405D72", 
-								color: "white", 
+								backgroundColor: "#405D72",
+								color: "white",
 								"&:hover": {
-									backgroundColor: "#405D72", 
+									backgroundColor: "#405D72",
 									"&::after": {
 										content: '""',
 										position: "absolute",
@@ -88,7 +105,7 @@ const YourCart = () => {
 									},
 								},
 								position: "relative",
-								overflow: "hidden", 
+								overflow: "hidden",
 								"&::after": {
 									content: '""',
 									position: "absolute",
