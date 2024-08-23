@@ -1,29 +1,45 @@
 import "./App.css";
 import { Routes, Route } from "react-router";
-import { CssBaseline } from "@mui/material";
+import { useState } from "react";
+import { FirestoreProvider } from "./contex/FireStoreContext";
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
 import YourCart from "./components/YourCart";
+import ProductList from "./components/ProductList";
+import ProductDetail from "./components/ProductDetail";
+import { CssBaseline } from "@mui/material";
 
 //Pages
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import Categories from "./pages/Categories";
-import ProductDetail from "./components/ProductDetail";
-import { FirestoreProvider } from "./contex/FireStoreContext";
 
 function App() {
+	const [categoryFilter, setCategoryFilter] = useState("");
+
+	const handleChangeFilter = (filterCategory, value) => {
+		if (filterCategory === "category") {
+			if (value === "" || value === "all") {
+				setCategoryFilter("");
+			} else {
+				setCategoryFilter(value);
+			}
+		}
+	};
+
 	return (
 		<FirestoreProvider>
 			<div>
 				<CssBaseline />
-				<Navbar />
+				<Navbar handleChangeFilter={handleChangeFilter} />
 				<CustomCursor />
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/product/:id" element={<ProductDetail />} />
-					<Route path="/categories" element={<Categories />} />
 					<Route path="/yourcart" element={<YourCart />} />
+					<Route
+						path="/categories/:category"
+						element={<ProductList categoryFilter={categoryFilter} />}
+					/>
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</div>
