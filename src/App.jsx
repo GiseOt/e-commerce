@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router";
+import { Routes, Route, useNavigate } from "react-router";
 import { useState } from "react";
 import { FirestoreProvider } from "./contex/FireStoreContext";
 import { AuthProvider } from "./contex/AuthContext";
@@ -16,19 +16,22 @@ import NotFound from "./pages/NotFound";
 import Orders from "./pages/Orders";
 
 function App() {
-    
- // Category Filter
+	// Category and Name Filters
 	const [categoryFilter, setCategoryFilter] = useState("");
+	const [nameFilter, setNameFilter] = useState("");
+	const navigate = useNavigate();
 
-	const handleChangeFilter = (filterCategory, value) => {
-		if (filterCategory === "category") {
-			if (value === "" || value === "all") {
-				setCategoryFilter("");
-			} else {
-				setCategoryFilter(value);
+	const handleChangeFilter = (filterType, value) => {
+		if (filterType === "category") {
+			setCategoryFilter(value === "all" ? "" : value);
+		} else if (filterType === "name") {
+			setNameFilter(value);
+
+			if (value === "" && categoryFilter === "") {
+				navigate("/");
 			}
-		} 
-    }
+		}
+	};
 
 	return (
 		<AuthProvider>
@@ -38,13 +41,18 @@ function App() {
 					<Navbar handleChangeFilter={handleChangeFilter} />
 					<CustomCursor />
 					<Routes>
-						<Route path="/" element={<Home />} />
+						<Route path="/" element={<Home nameFilter={nameFilter} />} />
 						<Route path="/product/:id" element={<ProductDetail />} />
 						<Route path="/yourcart" element={<YourCart />} />
 						<Route path="/orders" element={<Orders />} />
 						<Route
 							path="/categories/:category"
-							element={<ProductList categoryFilter={categoryFilter} />}
+							element={
+								<ProductList
+									categoryFilter={categoryFilter}
+									nameFilter={nameFilter}
+								/>
+							}
 						/>
 						<Route path="*" element={<NotFound />} />
 					</Routes>

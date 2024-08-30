@@ -12,23 +12,29 @@ import {
 	Button,
 } from "@mui/material";
 
-
-const ProductList = ({ categoryFilter }) => {
+const ProductList = ({ categoryFilter, nameFilter }) => {
 	const { products, error } = useContext(FirestoreContext);
 
-	// Filter
-	const filteredProducts = categoryFilter
-		? products.filter((product) => product.category === categoryFilter)
-		: products;
-
 	if (error) return <NotFound />;
-    
+
+	// Name Filter
+	const filteredByName = products.filter(
+		(product) =>
+			nameFilter === "" ||
+			product.name.toLowerCase().includes(nameFilter.toLowerCase())
+	);
+
+	// Category Filter
+	const filteredByCategory =
+		categoryFilter && categoryFilter !== "all"
+			? filteredByName.filter((product) => product.category === categoryFilter)
+			: filteredByName;
 
 	return (
 		<div>
 			<Grid container spacing={3} sx={{ marginTop: "80px" }}>
-				{filteredProducts.length > 0 ? (
-					filteredProducts.map((product) => (
+				{filteredByCategory.length > 0 ? (
+					filteredByCategory.map((product) => (
 						<Grid item xs={12} sm={6} md={4} key={product.id}>
 							<Card
 								sx={{
@@ -44,6 +50,7 @@ const ProductList = ({ categoryFilter }) => {
 									component="img"
 									sx={{ height: 400, objectFit: "cover" }}
 									image={product.img}
+									alt={product.name}
 								/>
 								<CardContent>
 									<Typography
@@ -93,7 +100,7 @@ const ProductList = ({ categoryFilter }) => {
 						</Grid>
 					))
 				) : (
-					<NotFound/>
+					<NotFound />
 				)}
 			</Grid>
 		</div>
