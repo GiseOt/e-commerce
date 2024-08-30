@@ -1,11 +1,13 @@
 import ProductList from "../components/ProductList";
 
-const Home = () => {
-  return (
-    <div>
-        <ProductList />
-    </div>
-  )
-}
+const Home = ({ nameFilter, categoryFilter }) => {
+	
 
-export default Home
+	return (
+		<div>
+			<ProductList categoryFilter={categoryFilter} nameFilter={nameFilter} />
+		</div>
+	);
+};
+
+export default Home;

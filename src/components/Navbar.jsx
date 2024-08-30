@@ -2,7 +2,6 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserDrawer from "./UserDrawer";
 import { FirestoreContext } from "../contex/FireStoreContext";
-import {db} from "../../firebase"
 import {
 	AppBar,
 	Box,
@@ -48,7 +47,9 @@ const Navbar = ({ handleChangeFilter }) => {
 	const toggleUserDrawer = () => {
 		setUserDrawerOpen(!userDrawerOpen);
 	};
-
+    const handleNameChange = (event) => {
+			handleChangeFilter("name", event.target.value);
+		};
 	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
@@ -210,7 +211,7 @@ const Navbar = ({ handleChangeFilter }) => {
 							variant="filled"
 							color="primary"
 							focused
-				
+							onChange={handleNameChange}
 						/>
 					</Box>
 
@@ -243,7 +244,7 @@ const Navbar = ({ handleChangeFilter }) => {
 					</Box>
 					<Box sx={{ flexGrow: 0, display: "flex", marginInline: 3 }}>
 						<IconButton
-							onClick={toggleUserDrawer} 
+							onClick={toggleUserDrawer}
 							sx={{
 								p: 0,
 								color: "gray",
