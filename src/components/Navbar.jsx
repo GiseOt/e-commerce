@@ -1,6 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import UserDrawer from "./UserDrawer";
 import { FirestoreContext } from "../contex/FireStoreContext";
+import {db} from "../../firebase"
 import {
 	AppBar,
 	Box,
@@ -10,14 +12,19 @@ import {
 	Button,
 	CssBaseline,
 	Badge,
+	TextField,
 } from "@mui/material";
-import { FaShoppingCart, FaBars } from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaUserAlt} from "react-icons/fa";
 
 const Navbar = ({ handleChangeFilter }) => {
 	const { cart } = useContext(FirestoreContext);
+    
 	const navigate = useNavigate();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 	const dropdownRef = useRef(null);
+
+
 
 	const handleCartClick = () => {
 		navigate("/yourcart");
@@ -38,9 +45,12 @@ const Navbar = ({ handleChangeFilter }) => {
 		}
 	};
 
+	const toggleUserDrawer = () => {
+		setUserDrawerOpen(!userDrawerOpen);
+	};
+
 	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
-
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
@@ -78,7 +88,6 @@ const Navbar = ({ handleChangeFilter }) => {
 						</Link>
 					</Typography>
 					<Box sx={{ flexGrow: 1, textAlign: "center", position: "relative" }}>
-					
 						<Button
 							sx={{
 								mx: 2,
@@ -131,7 +140,7 @@ const Navbar = ({ handleChangeFilter }) => {
 						</Button>
 						{dropdownOpen && (
 							<Box
-								ref={dropdownRef} 
+								ref={dropdownRef}
 								sx={{
 									position: "absolute",
 									top: "100%",
@@ -193,45 +202,74 @@ const Navbar = ({ handleChangeFilter }) => {
 								</Link>
 							</Box>
 						)}
+					</Box>
+					<Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
+						<TextField
+							id="filled-basic"
+							label="Search"
+							variant="filled"
+							color="primary"
+							focused
+				
+						/>
+					</Box>
 
-						<Button
+					<Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+						<IconButton
+							onClick={handleCartClick}
 							sx={{
-								mx: 2,
+								p: 0,
 								color: "gray",
 								position: "relative",
-								"&::after": {
-									content: '""',
-									position: "absolute",
-									width: "0",
-									height: "2px",
-									bottom: "-2px",
-									left: "50%",
-									transform: "translateX(-50%)",
-									backgroundColor: "#FFF200",
-									transition: "width 0.3s",
-								},
-								"&:hover::after": {
-									width: "100%",
+								"&:hover": {
+									"&::after": {
+										content: '""',
+										position: "absolute",
+										width: "100%",
+										height: "2px",
+										bottom: "-2px",
+										left: "50%",
+										transform: "translateX(-50%)",
+										backgroundColor: "#FFF200",
+										transition: "width 0.3s",
+									},
 								},
 							}}
 						>
-							<Link
-								to="/yourcart"
-								style={{ textDecoration: "none", color: "inherit" }}
-							>
-								Your cart
-							</Link>
-						</Button>
-					</Box>
-					<Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
-						<IconButton onClick={handleCartClick} sx={{ p: 0, color: "gray" }}>
 							<Badge badgeContent={cart.length} color="primary">
 								<FaShoppingCart size={24} />
 							</Badge>
 						</IconButton>
 					</Box>
+					<Box sx={{ flexGrow: 0, display: "flex", marginInline: 3 }}>
+						<IconButton
+							onClick={toggleUserDrawer} 
+							sx={{
+								p: 0,
+								color: "gray",
+								position: "relative",
+								"&:hover": {
+									"&::after": {
+										content: '""',
+										position: "absolute",
+										width: "100%",
+										height: "2px",
+										bottom: "-2px",
+										left: "50%",
+										transform: "translateX(-50%)",
+										backgroundColor: "#FFF200",
+										transition: "width 0.3s",
+									},
+								},
+							}}
+						>
+							<FaUserAlt size={24} />
+						</IconButton>
+					</Box>
 				</Toolbar>
 			</AppBar>
+
+			{userDrawerOpen && <UserDrawer onClose={toggleUserDrawer} />}
 		</>
 	);
 };

@@ -22,6 +22,7 @@ const ProductList = ({ categoryFilter }) => {
 		: products;
 
 	if (error) return <NotFound />;
+    
 
 	return (
 		<div>

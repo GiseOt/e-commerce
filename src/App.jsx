@@ -2,6 +2,7 @@ import "./App.css";
 import { Routes, Route } from "react-router";
 import { useState } from "react";
 import { FirestoreProvider } from "./contex/FireStoreContext";
+import { AuthProvider } from "./contex/AuthContext";
 import CustomCursor from "./components/CustomCursor";
 import Navbar from "./components/Navbar";
 import YourCart from "./components/YourCart";
@@ -12,8 +13,11 @@ import { CssBaseline } from "@mui/material";
 //Pages
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import Orders from "./pages/Orders";
 
 function App() {
+    
+ // Category Filter
 	const [categoryFilter, setCategoryFilter] = useState("");
 
 	const handleChangeFilter = (filterCategory, value) => {
@@ -23,27 +27,30 @@ function App() {
 			} else {
 				setCategoryFilter(value);
 			}
-		}
-	};
+		} 
+    }
 
 	return (
-		<FirestoreProvider>
-			<div>
-				<CssBaseline />
-				<Navbar handleChangeFilter={handleChangeFilter} />
-				<CustomCursor />
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/product/:id" element={<ProductDetail />} />
-					<Route path="/yourcart" element={<YourCart />} />
-					<Route
-						path="/categories/:category"
-						element={<ProductList categoryFilter={categoryFilter} />}
-					/>
-					<Route path="*" element={<NotFound />} />
-				</Routes>
-			</div>
-		</FirestoreProvider>
+		<AuthProvider>
+			<FirestoreProvider>
+				<div>
+					<CssBaseline />
+					<Navbar handleChangeFilter={handleChangeFilter} />
+					<CustomCursor />
+					<Routes>
+						<Route path="/" element={<Home />} />
+						<Route path="/product/:id" element={<ProductDetail />} />
+						<Route path="/yourcart" element={<YourCart />} />
+						<Route path="/orders" element={<Orders />} />
+						<Route
+							path="/categories/:category"
+							element={<ProductList categoryFilter={categoryFilter} />}
+						/>
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</div>
+			</FirestoreProvider>
+		</AuthProvider>
 	);
 }
 
