@@ -13,18 +13,23 @@ import {
 	Badge,
 	TextField,
 } from "@mui/material";
-import { FaShoppingCart, FaBars, FaUserAlt} from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaUserAlt } from "react-icons/fa";
 
 const Navbar = ({ handleChangeFilter }) => {
 	const { cart } = useContext(FirestoreContext);
-    
+
 	const navigate = useNavigate();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 	const dropdownRef = useRef(null);
+	const [menuOpen, setMenuOpen] = useState(false);
 
+	//Mobile Menu
+	const toggleMenu = () => {
+		setMenuOpen(!menuOpen);
+	};
 
-
+    //Cart
 	const handleCartClick = () => {
 		navigate("/yourcart");
 	};
@@ -43,13 +48,15 @@ const Navbar = ({ handleChangeFilter }) => {
 			setDropdownOpen(false);
 		}
 	};
-
+    //User
 	const toggleUserDrawer = () => {
 		setUserDrawerOpen(!userDrawerOpen);
 	};
-    const handleNameChange = (event) => {
-			handleChangeFilter("name", event.target.value);
-		};
+    //Search
+	const handleNameChange = (event) => {
+		handleChangeFilter("name", event.target.value);
+	};
+
 	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
@@ -60,23 +67,103 @@ const Navbar = ({ handleChangeFilter }) => {
 	return (
 		<>
 			<CssBaseline />
-			<AppBar sx={{ paddingInline: 5, bgcolor: "white", boxShadow: 3 }}>
-				<Toolbar disableGutters sx={{ width: "100%", maxWidth: "100vw" }}>
+			<AppBar
+				sx={{
+					paddingInline: { xs: "10px", md: 5 }, 
+					bgcolor: "white",
+					boxShadow: 3,
+				}}
+			>
+				<Toolbar disableGutters sx={{ width: "100%", maxWidth: "100vw" , paddingBottom : "5px"}}>
 					<IconButton
 						size="large"
 						edge="start"
 						color="inherit"
 						aria-label="menu"
 						sx={{ display: { xs: "block", md: "none" }, color: "gray" }}
+						onClick={toggleMenu}
 					>
 						<FaBars size={24} />
 					</IconButton>
+					{menuOpen && (
+						<Box
+							sx={{
+								display: { xs: "block", md: "none" },
+								position: "absolute",
+								top: "75px",
+								right: 0,
+								width: "100%",
+								bgcolor: "white",
+								boxShadow: 3,
+								borderRadius: 1,
+								zIndex: 1,
+							}}
+						>
+							<Button
+								sx={{
+									mx: 2,
+									color: "gray",
+									position: "relative",
+									"&::after": {
+										content: '""',
+										position: "absolute",
+										width: "0",
+										height: "2px",
+										bottom: "-2px",
+										left: "50%",
+										transform: "translateX(-50%)",
+										backgroundColor: "#FFF200",
+										transition: "width 0.3s",
+									},
+									"&:hover::after": {
+										width: "100%",
+									},
+								}}
+								onClick={() => {
+									setMenuOpen(false);
+								}}
+							>
+								<Link
+									to="/"
+									style={{ textDecoration: "none", color: "inherit" }}
+								>
+									Home
+								</Link>
+							</Button>
+
+							<Button
+								sx={{
+									mx: 2,
+									color: "gray",
+									position: "relative",
+									"&::after": {
+										content: '""',
+										position: "absolute",
+										width: "0",
+										height: "2px",
+										bottom: "-2px",
+										left: "50%",
+										transform: "translateX(-50%)",
+										backgroundColor: "#FFF200",
+										transition: "width 0.3s",
+									},
+									"&:hover::after": {
+										width: "100%",
+									},
+								}}
+								onClick={toggleDropdown}
+							>
+								Categories
+							</Button>
+						</Box>
+					)}
+
 					<Typography
 						variant="h6"
 						noWrap
 						sx={{
 							mr: 2,
-							display: { xs: "none", md: "flex" },
+							fontSize: { xs: "15px", md:"20px" },
 							fontFamily: "monospace",
 							fontWeight: 700,
 							letterSpacing: ".3rem",
@@ -88,9 +175,20 @@ const Navbar = ({ handleChangeFilter }) => {
 							ARTESIA
 						</Link>
 					</Typography>
-					<Box sx={{ flexGrow: 1, textAlign: "center", position: "relative" }}>
+
+					{/* Desktop menu items */}
+					<Box
+						sx={{
+							flexGrow: 1,
+							textAlign: "center",
+							position: "relative",
+							display: { md: "flex" },
+							justifyContent: { md: "center" },
+						}}
+					>
 						<Button
 							sx={{
+								display: { xs: "none", md: "block" },
 								mx: 2,
 								color: "gray",
 								position: "relative",
@@ -110,13 +208,20 @@ const Navbar = ({ handleChangeFilter }) => {
 								},
 							}}
 						>
-							<Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+							<Link
+								to="/"
+								style={{
+									textDecoration: "none",
+									color: "inherit",
+								}}
+							>
 								Home
 							</Link>
 						</Button>
 
 						<Button
 							sx={{
+								display: { xs: "none", md: "block" },
 								mx: 2,
 								color: "gray",
 								position: "relative",
@@ -146,7 +251,7 @@ const Navbar = ({ handleChangeFilter }) => {
 									position: "absolute",
 									top: "100%",
 									left: "50%",
-									transform: "translateX(-50%)",
+									width: "200px",
 									bgcolor: "white",
 									boxShadow: 3,
 									borderRadius: 1,
@@ -204,6 +309,8 @@ const Navbar = ({ handleChangeFilter }) => {
 							</Box>
 						)}
 					</Box>
+
+					{/* Search  */}
 					<Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
 						<TextField
 							id="filled-basic"
@@ -212,9 +319,13 @@ const Navbar = ({ handleChangeFilter }) => {
 							color="primary"
 							focused
 							onChange={handleNameChange}
+							sx={{
+								width: { xs: "100px", md: "200px" }, 
+							}}
 						/>
 					</Box>
 
+					{/* Cart*/}
 					<Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
 						<IconButton
 							onClick={handleCartClick}
@@ -242,6 +353,8 @@ const Navbar = ({ handleChangeFilter }) => {
 							</Badge>
 						</IconButton>
 					</Box>
+
+					{/* User  */}
 					<Box sx={{ flexGrow: 0, display: "flex", marginInline: 3 }}>
 						<IconButton
 							onClick={toggleUserDrawer}
@@ -274,5 +387,4 @@ const Navbar = ({ handleChangeFilter }) => {
 		</>
 	);
 };
-
 export default Navbar;

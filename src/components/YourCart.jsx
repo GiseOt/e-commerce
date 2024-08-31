@@ -55,8 +55,6 @@ const YourCart = () => {
 				total: getTotal(),
 			};
 
-			console.log("Order Data:", orderData);
-
 			await addDoc(collection(db, "orders"), orderData);
 
 			Swal.fire({
