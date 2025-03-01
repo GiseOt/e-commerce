@@ -2,9 +2,9 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { FirestoreContext } from "../contex/FireStoreContext";
-import { db } from "../../firebase"; 
+import { db } from "../../firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
-import UserDrawer from "./UserDrawer"; 
+import UserDrawer from "./UserDrawer";
 import {
 	Box,
 	Typography,
@@ -19,7 +19,6 @@ import {
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-
 const YourCart = () => {
 	const navigate = useNavigate();
 	const { cart, removeFromCart, emptyCart } = useContext(FirestoreContext);
@@ -28,22 +27,70 @@ const YourCart = () => {
 	const auth = getAuth();
 	const user = auth.currentUser;
 
+	const showLoginAlert = () => {
+		Swal.fire({
+			icon: "warning",
+			title: "You must log in first!",
+			text: "Please log in to proceed with your purchase.",
+			confirmButtonText: "Log In",
+			confirmButtonColor: "#405D72", 
+			background: "#f4f4f4", 
+			customClass: {
+				title: "swal-title",
+				content: "swal-content",
+			},
+		}).then(() => {
+			setIsDrawerOpen(true);
+		});
+	};
+
+	const showEmptyCartAlert = () => {
+		Swal.fire({
+			icon: "warning",
+			title: "Your cart is empty!",
+			text: "Please add some items before checking out.",
+			confirmButtonText: "Ok",
+			confirmButtonColor: "#405D72", 
+			background: "#f4f4f4", 
+		});
+	};
+
+	const showSuccessAlert = () => {
+		Swal.fire({
+			position: "center",
+			icon: "success",
+			title: "Purchase Successful",
+			showConfirmButton: false,
+			timer: 2000,
+			background: "#f4f4f4", 
+			color: "#405D72", 
+		});
+	};
+
+	const showErrorAlert = () => {
+		Swal.fire({
+			position: "center",
+			icon: "error",
+			title: "Error",
+			text: "There was an error saving your order. Please try again.",
+			confirmButtonText: "Retry",
+			confirmButtonColor: "#405D72", 
+			background: "#f4f4f4",
+		});
+	};
+
 	const handleRemoveItem = (id) => {
 		removeFromCart(id);
 	};
 
 	const handleBuyNow = async () => {
 		if (!user) {
-			setIsDrawerOpen(true);
+			showLoginAlert();
 			return;
 		}
 
 		if (cart.length === 0) {
-			Swal.fire({
-				icon: "warning",
-				title: "Your cart is empty!",
-				text: "Please add some items before checking out.",
-			});
+			showEmptyCartAlert();
 			return;
 		}
 
@@ -57,27 +104,15 @@ const YourCart = () => {
 
 			await addDoc(collection(db, "orders"), orderData);
 
-			Swal.fire({
-				position: "center",
-				icon: "success",
-				title: "Purchase Successful",
-				showConfirmButton: false,
-				timer: 2000,
-			}).then(() => {
-				emptyCart();
-				navigate("/");
-			});
+			showSuccessAlert();
+
+			emptyCart();
+			navigate("/");
 		} catch (error) {
 			console.error("Error saving order:", error);
-			Swal.fire({
-				position: "center",
-				icon: "error",
-				title: "Error",
-				text: "There was an error saving your order. Please try again.",
-			});
+			showErrorAlert();
 		}
 	};
-
 
 	const getTotal = () => {
 		return cart.reduce((total, product) => {

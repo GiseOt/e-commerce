@@ -29,7 +29,7 @@ const Navbar = ({ handleChangeFilter }) => {
 		setMenuOpen(!menuOpen);
 	};
 
-    //Cart
+	//Cart
 	const handleCartClick = () => {
 		navigate("/yourcart");
 	};
@@ -48,11 +48,11 @@ const Navbar = ({ handleChangeFilter }) => {
 			setDropdownOpen(false);
 		}
 	};
-    //User
+	//User
 	const toggleUserDrawer = () => {
 		setUserDrawerOpen(!userDrawerOpen);
 	};
-    //Search
+	//Search
 	const handleNameChange = (event) => {
 		handleChangeFilter("name", event.target.value);
 	};
@@ -69,12 +69,15 @@ const Navbar = ({ handleChangeFilter }) => {
 			<CssBaseline />
 			<AppBar
 				sx={{
-					paddingInline: { xs: "10px", md: 5 }, 
+					paddingInline: { xs: "10px", md: 5 },
 					bgcolor: "white",
 					boxShadow: 3,
 				}}
 			>
-				<Toolbar disableGutters sx={{ width: "100%", maxWidth: "100vw" , paddingBottom : "5px"}}>
+				<Toolbar
+					disableGutters
+					sx={{ width: "100%", maxWidth: "100vw", paddingBottom: "5px" }}
+				>
 					<IconButton
 						size="large"
 						edge="start"
@@ -163,7 +166,7 @@ const Navbar = ({ handleChangeFilter }) => {
 						noWrap
 						sx={{
 							mr: 2,
-							fontSize: { xs: "15px", md:"20px" },
+							fontSize: { xs: "15px", md: "20px" },
 							fontFamily: "monospace",
 							fontWeight: 700,
 							letterSpacing: ".3rem",
@@ -315,12 +318,18 @@ const Navbar = ({ handleChangeFilter }) => {
 						<TextField
 							id="filled-basic"
 							label="Search"
-							variant="filled"
-							color="primary"
+							variant="standard"
 							focused
 							onChange={handleNameChange}
 							sx={{
-								width: { xs: "100px", md: "200px" }, 
+								width: { xs: "100px", md: "200px" },
+								input: { color: "gray" },
+								"& .MuiInput-underline:before": {
+									borderBottomColor: "gray",
+								},
+								"& .MuiInput-underline:after": {
+									borderBottomColor: "gray",
+								},
 							}}
 						/>
 					</Box>
